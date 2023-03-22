@@ -1,6 +1,6 @@
 import getInitialState from '@/store/getInitialState'
 import { storageName, useStore } from '@/store/store'
-import { compressToEncodedURIComponent } from 'lz-string'
+import { compress } from 'lz-string'
 import type { GetServerSideProps } from 'next'
 import Link from 'next/link'
 import Cookie from 'cookie'
@@ -24,11 +24,10 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
     theme: 'dark'
   })
 
-  const serialized = Cookie.serialize(
-    storageName,
-    compressToEncodedURIComponent(JSON.stringify(newState)),
-    { path: '/', sameSite: 'strict' }
-  )
+  const serialized = Cookie.serialize(storageName, compress(JSON.stringify(newState)), {
+    path: '/',
+    sameSite: 'strict'
+  })
 
   res.setHeader('set-cookie', serialized)
 
